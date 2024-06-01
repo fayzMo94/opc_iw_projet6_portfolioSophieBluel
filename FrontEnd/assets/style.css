@@ -125,6 +125,36 @@ li:hover {
 	text-align: center;
 	margin-bottom: 1em;
 }
+
+/* Projects Filter section */
+.filters {
+	display: flex;
+	justify-content: center;
+	margin: 3.5em 0px;
+	gap: 10px;
+}
+.filters button {
+	height: 37px;
+	background: none;
+	cursor: pointer;
+	font-family: 'Syne';
+	font-weight: bold;
+	color: #1D6154;
+	font-size: 16px;
+	border-radius: 60px;
+	border:1px solid #1D6154;
+	padding: 0 20px;
+}
+.filters button:hover {
+	color: white;
+	background-color: #0E2F28;
+} 
+
+.filter-active {
+	color: white !important;
+	background-color: #1D6154 !important;
+}
+
 .gallery {
 	width: 100%;
 	display: grid;
