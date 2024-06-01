@@ -1,14 +1,18 @@
-const response = await fetch("http://localhost:5678/api/works/");
-let projects = await response.json();
+// Recuperation des projets et des categories
+async function fetchData(url) {
+  const response = await fetch(url);
+  return response.json();
+}
 
-console.log(projects[0].title);
+const projects = await fetchData("http://localhost:5678/api/works/");
+const categories = await fetchData("http://localhost:5678/api/categories");
 
+// generer les projets
 function generateProjects(projects) {
-  for (let i = 0; i < projects.length; i++) {
-    const project = projects[i];
+  const gallerySection = document.querySelector(".gallery");
+  gallerySection.innerHTML = "";
 
-    const gallerySection = document.querySelector(".gallery");
-
+  projects.forEach((project) => {
     const projectEle = document.createElement("figure");
     const imgEle = document.createElement("img");
     const captionEle = document.createElement("figcaption");
@@ -20,7 +24,55 @@ function generateProjects(projects) {
     gallerySection.appendChild(projectEle);
     projectEle.appendChild(imgEle);
     projectEle.appendChild(captionEle);
-  }
+  });
+}
+generateProjects(projects);
+
+// generer les boutons de filtres
+function generateFilterBtns(categories) {
+  const filtersEle = document.querySelector(".filters");
+
+  const filterBtnAllEle = document.createElement("button");
+  filterBtnAllEle.textContent = "Tous";
+  filterBtnAllEle.dataset.id = 0;
+  filtersEle.appendChild(filterBtnAllEle);
+
+  categories.forEach((category) => {
+    const categoryEle = document.createElement("button");
+    categoryEle.textContent = category.name;
+    categoryEle.dataset.id = category.id;
+    filtersEle.appendChild(categoryEle);
+  });
+}
+generateFilterBtns(categories);
+
+// gestion des boutons filtres
+const filterBtns = document.querySelectorAll(".filters button");
+let selectedFilter = "Tous";
+
+function updateActiveBtn() {
+  filterBtns.forEach((filterBtn) => {
+    filterBtn.classList.toggle(
+      "filter-active",
+      filterBtn.textContent === selectedFilter
+    );
+  });
 }
 
-generateProjects(projects);
+// generer selon le filtre selectionner
+filterBtns.forEach((filterBtn) => {
+  filterBtn.addEventListener("click", () => {
+    const filteredProjects =
+      filterBtn.dataset.id == 0
+        ? projects
+        : projects.filter(
+            (project) => project.categoryId == filterBtn.dataset.id
+          );
+
+    generateProjects(filteredProjects);
+
+    selectedFilter = filterBtn.innerText;
+    updateActiveBtn();
+  });
+});
+updateActiveBtn();
