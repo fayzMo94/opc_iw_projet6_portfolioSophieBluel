@@ -90,6 +90,7 @@ video {
   font-size: 100%;
   font: inherit;
   vertical-align: baseline;
+  scroll-behavior: smooth;
 }
 /* HTML5 display-role reset for older browsers */
 article,
@@ -169,14 +170,20 @@ nav ul {
   align-items: center;
   list-style-type: none;
 }
-nav li {
+nav li,
+nav a {
   padding: 0 10px;
   font-size: 1.2em;
+  cursor: pointer;
+  text-decoration: none;
+  color: black;
 }
 
-li:hover {
+li:hover,
+nav a:hover {
   color: #b1663c;
 }
+
 #introduction {
   display: flex;
   align-items: center;
@@ -262,26 +269,31 @@ li:hover {
   width: 50%;
   margin: auto;
 }
-#contact > * {
+#contact > *,
+#login_section > * {
   text-align: center;
 }
-#contact h2 {
+#contact h2,
+#login_section h2 {
   margin-bottom: 20px;
 }
-#contact form {
+#contact form,
+#login_section form {
   text-align: left;
   margin-top: 30px;
   display: flex;
   flex-direction: column;
 }
 
-#contact input {
+#contact input,
+#login_section input {
   height: 50px;
   font-size: 1.2em;
   border: none;
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
-#contact label {
+#contact label,
+#login_section label {
   margin: 2em 0 1em 0;
 }
 #contact textarea {
@@ -298,6 +310,19 @@ input[type="submit"] {
   width: 180px;
   text-align: center;
   border-radius: 60px;
+	cursor: pointer;
+}
+
+/* login page */
+#login_section {
+  width: 50%;
+  margin: 8em auto 18em;
+}
+
+#login_section a {
+  display: block;
+  color: black;
+  font-weight: 600;
 }
 
 footer nav ul {
