@@ -325,6 +325,14 @@ input[type="submit"] {
   font-weight: 600;
 }
 
+.login_error {
+  color: red;
+  text-align: center;
+  margin-top: 1.5em;
+  font-weight: 600;
+  font-style: italic;
+}
+
 footer nav ul {
   display: flex;
   justify-content: flex-end;

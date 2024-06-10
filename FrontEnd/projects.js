@@ -1,4 +1,5 @@
-// Recuperation des projets et des categories
+//! --------- Recuperation des projets et des categories  --------
+
 async function fetchData(url) {
   const response = await fetch(url);
   return response.json();
@@ -7,7 +8,7 @@ async function fetchData(url) {
 const projects = await fetchData("http://localhost:5678/api/works/");
 const categories = await fetchData("http://localhost:5678/api/categories");
 
-// generer les projets
+//! --------- generer les projets ---------
 function generateProjects(projects) {
   const gallerySection = document.querySelector(".gallery");
   gallerySection.innerHTML = "";
@@ -28,7 +29,7 @@ function generateProjects(projects) {
 }
 generateProjects(projects);
 
-// generer les boutons de filtres
+//! --------- generer les boutons de filtres ---------
 function generateFilterBtns(categories) {
   const filtersEle = document.querySelector(".filters");
 
@@ -46,21 +47,18 @@ function generateFilterBtns(categories) {
 }
 generateFilterBtns(categories);
 
-// gestion des boutons filtres
+//! --------- gestion des boutons filtres ---------
 const filterBtns = document.querySelectorAll(".filters button");
-let selectedFilter = "Tous";
+let selectedFilter = 0;
 
 function updateActiveBtn() {
-  filterBtns.forEach((filterBtn) => {
-    filterBtn.classList.toggle(
-      "filter-active",
-      filterBtn.textContent === selectedFilter
-    );
+  filterBtns.forEach((filterBtn, i) => {
+    filterBtn.classList.toggle("filter-active", i === selectedFilter);
   });
 }
 
-// generer selon le filtre selectionner
-filterBtns.forEach((filterBtn) => {
+//! --------- generer selon le filtre selectionner ---------
+filterBtns.forEach((filterBtn, i) => {
   filterBtn.addEventListener("click", () => {
     const filteredProjects =
       filterBtn.dataset.id == 0
@@ -71,7 +69,7 @@ filterBtns.forEach((filterBtn) => {
 
     generateProjects(filteredProjects);
 
-    selectedFilter = filterBtn.innerText;
+    selectedFilter = i;
     updateActiveBtn();
   });
 });
