@@ -207,16 +207,35 @@ nav a:hover {
 #introduction p {
   margin-bottom: 0.5em;
 }
+#portfolio {
+  position: relative;
+}
 #portfolio h2 {
   text-align: center;
-  margin-bottom: 1em;
+}
+
+/* edit gallery btn */
+.title-edit_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 3em;
+}
+.editGalleryBtn {
+  cursor: pointer;
+  padding-top: 2px;
+}
+.editGalleryBtn i {
+  font-size: 18px;
+  margin-right: 5px;
 }
 
 /* Projects Filter section */
 .filters {
   display: flex;
   justify-content: center;
-  margin: 3.5em 0px;
+  margin: 3em 0px;
   gap: 10px;
 }
 .filters button {
@@ -310,7 +329,7 @@ input[type="submit"] {
   width: 180px;
   text-align: center;
   border-radius: 60px;
-	cursor: pointer;
+  cursor: pointer;
 }
 
 /* login page */

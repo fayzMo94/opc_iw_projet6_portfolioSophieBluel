@@ -74,3 +74,34 @@ filterBtns.forEach((filterBtn, i) => {
   });
 });
 updateActiveBtn();
+
+// ! --------- ***** UTILISATEUR CONNECTE ***** --------- //
+// --- variables ---
+const loginLogoutBtn = document.getElementById("loginLogoutBtn");
+
+//! --------- changement interface : utilisateur connecté ---------
+function userMode() {
+  if (sessionStorage.getItem("token") !== null) {
+    loginLogoutBtn.textContent = "logout";
+    loginLogoutHandler();
+    document.querySelector(".filters").style.display = "none";
+  } else {
+    loginLogoutBtn.textContent = "login";
+    loginLogoutHandler();
+    document.querySelector(".filters").style.display = "flex";
+    document.querySelector(".editGalleryBtn").style.display = "none";
+  }
+}
+userMode();
+
+//! --------- gestion bouton login/logout ---------
+function loginLogoutHandler() {
+  loginLogoutBtn.addEventListener("click", (e) => {
+    if (e.target.textContent == "login") {
+      window.location.replace("./login.html");
+    } else {
+      sessionStorage.removeItem("token");
+      userMode();
+    }
+  });
+}
