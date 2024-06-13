@@ -8,21 +8,31 @@ async function fetchData(url) {
 const projects = await fetchData("http://localhost:5678/api/works/");
 const categories = await fetchData("http://localhost:5678/api/categories");
 
+// ! ****** VARIABLES/ELEMENTS ******
+const gallery = document.querySelector(".gallery");
+const filters = document.querySelector(".filters");
+const loginLogoutBtn = document.getElementById("loginLogoutBtn");
+const editGalleryBtn = document.querySelector(".editGalleryBtn");
+
+// Modal elements:
+const modal = document.querySelector(".modal");
+const modalCloseIcon = document.querySelector(".modal_closeIcon");
+const modalContent = document.querySelector(".modal_main-content");
+
 //! --------- generer les projets ---------
 function generateProjects(projects) {
-  const gallerySection = document.querySelector(".gallery");
-  gallerySection.innerHTML = "";
+  gallery.innerHTML = "";
 
-  projects.forEach((project) => {
+  projects.forEach((i) => {
     const projectEle = document.createElement("figure");
     const imgEle = document.createElement("img");
     const captionEle = document.createElement("figcaption");
 
-    imgEle.src = project.imageUrl;
-    imgEle.alt = project.title;
-    captionEle.innerText = project.title;
+    imgEle.src = i.imageUrl;
+    imgEle.alt = i.title;
+    captionEle.innerText = i.title;
 
-    gallerySection.appendChild(projectEle);
+    gallery.appendChild(projectEle);
     projectEle.appendChild(imgEle);
     projectEle.appendChild(captionEle);
   });
@@ -31,18 +41,16 @@ generateProjects(projects);
 
 //! --------- generer les boutons de filtres ---------
 function generateFilterBtns(categories) {
-  const filtersEle = document.querySelector(".filters");
-
   const filterBtnAllEle = document.createElement("button");
   filterBtnAllEle.textContent = "Tous";
   filterBtnAllEle.dataset.id = 0;
-  filtersEle.appendChild(filterBtnAllEle);
+  filters.appendChild(filterBtnAllEle);
 
   categories.forEach((category) => {
     const categoryEle = document.createElement("button");
     categoryEle.textContent = category.name;
     categoryEle.dataset.id = category.id;
-    filtersEle.appendChild(categoryEle);
+    filters.appendChild(categoryEle);
   });
 }
 generateFilterBtns(categories);
@@ -76,20 +84,21 @@ filterBtns.forEach((filterBtn, i) => {
 updateActiveBtn();
 
 // ! --------- ***** UTILISATEUR CONNECTE ***** --------- //
-// --- variables ---
-const loginLogoutBtn = document.getElementById("loginLogoutBtn");
 
 //! --------- changement interface : utilisateur connecté ---------
 function userMode() {
   if (sessionStorage.getItem("token") !== null) {
     loginLogoutBtn.textContent = "logout";
     loginLogoutHandler();
-    document.querySelector(".filters").style.display = "none";
+    filters.style.display = "none";
+    editGalleryBtn.addEventListener("click", openModal);
+    modalCloseIcon.addEventListener("click", closeModal);
+    modalGallery(projects);
   } else {
     loginLogoutBtn.textContent = "login";
     loginLogoutHandler();
-    document.querySelector(".filters").style.display = "flex";
-    document.querySelector(".editGalleryBtn").style.display = "none";
+    filters.style.display = "flex";
+    editGalleryBtn.style.display = "none";
   }
 }
 userMode();
@@ -103,5 +112,38 @@ function loginLogoutHandler() {
       sessionStorage.removeItem("token");
       userMode();
     }
+  });
+}
+
+// !--------- **** MODAL **** ---------
+
+// ouvre la MODAL (si token present)
+function openModal() {
+  if (sessionStorage.getItem("token") !== null) {
+    modal.style.display = "flex";
+  }
+}
+
+// ferme la MODAL
+function closeModal() {
+  modal.style.display = "none";
+}
+
+function modalGallery(projs) {
+  modalContent.innerHTML = "";
+  projs.forEach((i) => {
+    const modalProjectEle = document.createElement("figure");
+    const imgEle = document.createElement("img");
+    const deleteProjIcon = document.createElement("i");
+
+    deleteProjIcon.classList.add("fa-solid", "fa-trash-can");
+    deleteProjIcon.id = i.id;
+    imgEle.src = i.imageUrl;
+    imgEle.alt = i.title;
+    modalProjectEle.className = "modal_project";
+
+    modalContent.appendChild(modalProjectEle);
+    modalProjectEle.appendChild(imgEle);
+    modalProjectEle.appendChild(deleteProjIcon);
   });
 }
