@@ -29,7 +29,7 @@ loginForm.addEventListener("submit", (e) => {
       body: JSON.stringify(userCred),
     }).then((response) => {
       if (response.status !== 200) {
-        loginErrEle.innerText = "Email ou mot de passe invalide";
+        loginErrEle.innerText = "Erreur dans l'identifiant ou le mot de passe";
       } else {
         response.json().then((userData) => {
           sessionStorage.setItem("token", userData.token);
