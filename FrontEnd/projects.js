@@ -5,8 +5,8 @@ async function fetchData(url) {
   return response.json();
 }
 
-const projects = await fetchData("http://localhost:5678/api/works/");
-const categories = await fetchData("http://localhost:5678/api/categories");
+let projects = await fetchData("http://localhost:5678/api/works/");
+let categories = await fetchData("http://localhost:5678/api/categories");
 
 // ! ****** VARIABLES/ELEMENTS ******
 const gallery = document.querySelector(".gallery");
@@ -16,8 +16,12 @@ const editGalleryBtn = document.querySelector(".editGalleryBtn");
 
 // Modal elements:
 const modal = document.querySelector(".modal");
-const modalCloseIcon = document.querySelector(".modal_closeIcon");
+const galleryEditEle = document.getElementById("gallery-edit");
+const addPhotoEle = document.getElementById("add-picture");
+const modalArrowIcon = document.querySelector(".fa-arrow-left");
+const modalCloseIcon = document.querySelectorAll(".modal_closeIcon");
 const modalContent = document.querySelector(".modal_main-content");
+const modalAddPhotoBtn = document.getElementById("modal_addPhotoBtn");
 
 //! --------- generer les projets ---------
 function generateProjects(projects) {
@@ -87,16 +91,20 @@ updateActiveBtn();
 
 //! --------- changement interface : utilisateur connecté ---------
 function userMode() {
-  if (sessionStorage.getItem("token") !== null) {
+  let token = sessionStorage.getItem("token");
+  if (token !== null) {
     loginLogoutBtn.textContent = "logout";
-    loginLogoutHandler();
     filters.style.display = "none";
+    editGalleryBtn.style.display = "block";
     editGalleryBtn.addEventListener("click", openModal);
-    modalCloseIcon.addEventListener("click", closeModal);
+    modalCloseIcon.forEach((closeIcon) =>
+      closeIcon.addEventListener("click", closeModal)
+    );
+    modalArrowIcon.addEventListener("click", galleryEditModal);
+    modalAddPhotoBtn.addEventListener("click", addPhotoModal);
     modalGallery(projects);
   } else {
     loginLogoutBtn.textContent = "login";
-    loginLogoutHandler();
     filters.style.display = "flex";
     editGalleryBtn.style.display = "none";
   }
@@ -104,18 +112,16 @@ function userMode() {
 userMode();
 
 //! --------- gestion bouton login/logout ---------
-function loginLogoutHandler() {
-  loginLogoutBtn.addEventListener("click", (e) => {
-    if (e.target.textContent == "login") {
-      window.location.replace("./login.html");
-    } else {
-      sessionStorage.removeItem("token");
-      userMode();
-    }
-  });
-}
+loginLogoutBtn.addEventListener("click", () => {
+  if (loginLogoutBtn.textContent === "login") {
+    window.location.replace("./login.html");
+  } else {
+    sessionStorage.removeItem("token");
+    userMode();
+  }
+});
 
-// !--------- **** MODAL **** ---------
+// !--------- **** MODALE **** ---------
 
 // ouvre la MODAL (si token present)
 function openModal() {
@@ -127,8 +133,23 @@ function openModal() {
 // ferme la MODAL
 function closeModal() {
   modal.style.display = "none";
+  galleryEditEle.style.display = "flex";
+  addPhotoEle.style.display = "none";
 }
 
+// ouvre la MODAL "ajout de photos"
+function addPhotoModal() {
+  galleryEditEle.style.display = "none";
+  addPhotoEle.style.display = "flex";
+}
+
+// retour à la modale "modifier gallery photo"
+function galleryEditModal() {
+  galleryEditEle.style.display = "flex";
+  addPhotoEle.style.display = "none";
+}
+
+// ! --------- affiche la galerie de la modale  ---------
 function modalGallery(projs) {
   modalContent.innerHTML = "";
   projs.forEach((i) => {
@@ -145,5 +166,40 @@ function modalGallery(projs) {
     modalContent.appendChild(modalProjectEle);
     modalProjectEle.appendChild(imgEle);
     modalProjectEle.appendChild(deleteProjIcon);
+
+    // supprimer un projet en clickant sur l'icone 'trash'
+    deleteProjIcon.addEventListener("click", (e) => {
+      e.preventDefault;
+      let confirmation = confirm(
+        "Êtes-vous sûr de vouloir supprimer ce projet ?"
+      );
+      if (confirmation) {
+        deleteProj(e.target.id);
+      }
+    });
   });
+}
+
+// ! --------- fonction pour supprimer un projet ---------
+function deleteProj(id) {
+  // message de comfirmation
+  let token = sessionStorage.getItem("token");
+  fetch(`http://localhost:5678/api/works/${id}`, {
+    method: "DELETE",
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  })
+    .then((res) => {
+      if (res.ok) {
+        projects = projects.filter((project) => project.id != id);
+        generateProjects(projects);
+        modalGallery(projects);
+      } else {
+        console.log(`Erreur: ${res.status}`);
+      }
+    })
+    .catch((error) => {
+      console.log("Erreur de suppression:", error);
+    });
 }
