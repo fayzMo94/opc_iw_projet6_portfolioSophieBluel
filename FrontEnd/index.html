@@ -23,11 +23,57 @@
   </head>
   <body>
     <aside class="modal">
+      <!-- Modal gallery edit -->
       <div id="gallery-edit" class="modal_wrapper">
         <div class="modal_closeIcon"><i class="fa-solid fa-xmark"></i></div>
         <h3 class="modal_title">Galerie photo</h3>
         <div class="modal_main-content"></div>
         <button id="modal_addPhotoBtn">Ajouter une photo</button>
+      </div>
+      <!-- Modal add pic -->
+      <div id="add-picture" class="modal_wrapper">
+        <div class="modal-icons">
+          <i class="fa-solid fa-arrow-left"></i
+          ><i class="modal_closeIcon fa-solid fa-xmark"></i>
+        </div>
+        <h3 class="modal_title">Ajout photo</h3>
+        <form enctype="multipart/form-data" id="add-pic_form">
+          <label for="photo" class="label_container">
+            <img
+              id="pic_icon"
+              src="./assets/icons/pictureIcon.png"
+              alt="choose your picture"
+            />
+            <button id="choose_pic_btn">+ Ajouter photo</button>
+            <p>jpg, png : 4mo max</p>
+            <img src="#" id="picPreviewImg" alt="Your picture" />
+          </label>
+          <input
+            type="file"
+            name="photo"
+            id="photo"
+            class="photo"
+            accept="image/png, image/jpeg"
+            required
+          />
+          <label for="title">Titre</label>
+          <input
+            class="form_input"
+            type="text"
+            id="title"
+            name="title"
+            required
+          />
+          <label for="category-select">Catégorie</label>
+          <select class="form_input iBorder" name="category-select" id="category-select">
+            <option disabled selected> -- choisir une catégorie -- </option>
+            <option value="1">Objets</option>
+            <option value="2">Appartements</option>
+            <option value="3">Hôtels & restaurants</option>
+          </select>
+          <hr />
+          <input class="submit-btn" type="submit" value="Valider" />
+        </form>
       </div>
     </aside>
     <header>
