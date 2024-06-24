@@ -23,6 +23,16 @@ const modalCloseIcon = document.querySelectorAll(".modal_closeIcon");
 const modalContent = document.querySelector(".modal_main-content");
 const modalAddPhotoBtn = document.getElementById("modal_addPhotoBtn");
 
+// Modal "add project" elements:
+const addProjForm = document.getElementById("add-pic_form");
+const formInputPhoto = document.getElementById("photo");
+const photoPreview = document.getElementById("picPreviewImg");
+const photoPreviewContainer = document.querySelector(".picPreview_container");
+const formCategorySelect = document.getElementById("category-select");
+const formTitle = document.getElementById("title");
+const formSubmitBtn = document.querySelector(".submit-btn");
+const submitBtnDiv = document.querySelector(".submit-btn-div");
+
 //! --------- generer les projets ---------
 function generateProjects(projects) {
   gallery.innerHTML = "";
@@ -70,21 +80,24 @@ function updateActiveBtn() {
 }
 
 //! --------- generer selon le filtre selectionner ---------
-filterBtns.forEach((filterBtn, i) => {
-  filterBtn.addEventListener("click", () => {
-    const filteredProjects =
-      filterBtn.dataset.id == 0
-        ? projects
-        : projects.filter(
-            (project) => project.categoryId == filterBtn.dataset.id
-          );
+function filterProjects(proj) {
+  filterBtns.forEach((filterBtn, i) => {
+    filterBtn.addEventListener("click", () => {
+      const filteredProjects =
+        filterBtn.dataset.id == 0
+          ? proj
+          : proj.filter(
+              (project) => project.categoryId == filterBtn.dataset.id
+            );
 
-    generateProjects(filteredProjects);
+      generateProjects(filteredProjects);
 
-    selectedFilter = i;
-    updateActiveBtn();
+      selectedFilter = i;
+      updateActiveBtn();
+    });
   });
-});
+}
+filterProjects(projects);
 updateActiveBtn();
 
 // ! --------- ***** UTILISATEUR CONNECTE ***** --------- //
@@ -116,6 +129,7 @@ loginLogoutBtn.addEventListener("click", () => {
   if (loginLogoutBtn.textContent === "login") {
     window.location.replace("./login.html");
   } else {
+    location.reload();
     sessionStorage.removeItem("token");
     userMode();
   }
@@ -133,8 +147,8 @@ function openModal() {
 // ferme la MODAL
 function closeModal() {
   modal.style.display = "none";
-  galleryEditEle.style.display = "flex";
-  addPhotoEle.style.display = "none";
+  galleryEditModal();
+  resetAddPhotoModal();
 }
 
 // ouvre la MODAL "ajout de photos"
@@ -147,7 +161,26 @@ function addPhotoModal() {
 function galleryEditModal() {
   galleryEditEle.style.display = "flex";
   addPhotoEle.style.display = "none";
+  resetAddPhotoModal();
 }
+
+// Reset la modale d'ajout de projet
+function resetAddPhotoModal() {
+  addProjForm.reset();
+  photoPreview.src = "";
+  submitBtnColor();
+  photoPreviewContainer.style.display = "none";
+  document.querySelector(".pic-format").style.display = "block";
+  document.querySelector("#choose_pic_btn").style.display = "block";
+  document.querySelector("#pic_icon").style.display = "block";
+}
+
+// ferme la modale lorsue l'on click
+modal.addEventListener("click", (e) => {
+  if (!e.target.closest("#gallery-edit") && !e.target.closest("#add-picture")) {
+    closeModal();
+  }
+});
 
 // ! --------- affiche la galerie de la modale  ---------
 function modalGallery(projs) {
@@ -202,4 +235,124 @@ function deleteProj(id) {
     .catch((error) => {
       console.log("Erreur de suppression:", error);
     });
+}
+
+// !--------- **** MODALE Ajout de projet **** ---------
+
+// ! --------- fonction preview de l'image selectionner ---------
+function previewImg() {
+  const fichiers = formInputPhoto.files;
+  photoPreview.src = URL.createObjectURL(fichiers[0]);
+  photoPreviewContainer.style.display = "flex";
+  document.querySelector(".pic-format").style.display = "none";
+  document.querySelector("#choose_pic_btn").style.display = "none";
+  document.querySelector("#pic_icon").style.display = "none";
+  submitBtnColor();
+}
+formInputPhoto.onchange = previewImg;
+
+// ! --------- couleur du "submit" si les champs sont vides ---------
+function submitBtnColor() {
+  if (
+    formInputPhoto.files[0] !== undefined &&
+    formTitle.value !== "" &&
+    formCategorySelect.selectedIndex !== 0
+  ) {
+    submitBtnDiv.style.display = "none";
+    formSubmitBtn.style.backgroundColor = "#1D6154";
+    formSubmitBtn.style.cursor = "pointer";
+    formSubmitBtn.disabled = false;
+  } else {
+    submitBtnDiv.style.display = "block";
+    formSubmitBtn.style.backgroundColor = "#a7a7a7";
+    formSubmitBtn.style.cursor = "default";
+    formSubmitBtn.disabled = true;
+  }
+}
+
+formTitle.addEventListener("input", () => {
+  submitBtnColor();
+});
+formCategorySelect.addEventListener("input", () => {
+  submitBtnColor();
+});
+
+submitBtnDiv.addEventListener("click", () => {
+  formValidation();
+});
+
+function formValidation() {
+  if (formInputPhoto.files[0] == undefined) {
+    alert("Le champ 'Ajouter photo' est vide");
+    return false;
+  }
+  if (formTitle.value.trim().length == 0) {
+    alert("Le champ 'Titre' est vide");
+    return false;
+  }
+  if (formCategorySelect.selectedIndex == 0) {
+    alert("Veuillez selectionner une catégorie");
+    return false;
+  }
+}
+
+// ! --------- submit form event listener ---------
+formSubmitBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  submitNewProject();
+});
+
+// ! --------- submit un nouveau projet ---------
+function submitNewProject() {
+  let image = formInputPhoto.files[0];
+  let title = formTitle.value;
+  let categoryId = formCategorySelect.selectedIndex;
+  let categoryName =
+    formCategorySelect.options[formCategorySelect.selectedIndex].innerText;
+
+  const formData = new FormData();
+  formData.append("image", image);
+  formData.append("title", title);
+  formData.append("category", categoryId);
+
+  addNewProj(formData, categoryName);
+}
+
+// ! --------- ajouter projet dans le tableau 'projects' ---------
+function addProj(proj, categoryName) {
+  let newProj = {};
+  newProj.id = proj.id;
+  newProj.title = proj.title;
+  newProj.imageUrl = proj.imageUrl;
+  newProj.category = { id: proj.categoryId, name: categoryName };
+
+  projects.push(newProj);
+}
+
+// ! --------- ajouter projet sur API ---------
+function addNewProj(formData, categoryName) {
+  let token = sessionStorage.getItem("token");
+  fetch("http://localhost:5678/api/works/", {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  })
+    .then((res) => {
+      if (res.ok) {
+        alert("Votre nouveau projet a été ajouté");
+        return res.json();
+      } else {
+        alert("Une erreur est survenue");
+        console.log(res.status);
+      }
+    })
+    .then((newProject) => {
+      addProj(newProject, categoryName);
+      generateProjects(projects);
+      modalGallery(projects);
+      closeModal();
+    })
+    .catch((error) => console.log(error));
 }
