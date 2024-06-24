@@ -169,11 +169,12 @@ nav ul {
   display: flex;
   align-items: center;
   list-style-type: none;
+  gap: 1em;
 }
-nav li,
+
 nav a {
   padding: 0 10px;
-  font-size: 1.2em;
+  font-size: 16px;
   cursor: pointer;
   text-decoration: none;
   color: black;
@@ -324,11 +325,9 @@ input[type="submit"] {
   font-family: "Syne";
   font-weight: 700;
   color: white;
-  background-color: #1d6154;
   margin: 2em auto;
   text-align: center;
   border-radius: 60px;
-  cursor: pointer;
 }
 
 /* login page */
@@ -345,6 +344,8 @@ input[type="submit"] {
 
 #login-form input[type="submit"] {
   width: 180px;
+  background-color: #1d6154;
+  cursor: pointer;
 }
 
 .login_error {
@@ -434,21 +435,40 @@ footer nav ul {
   border-radius: 3px;
 }
 
+.submit-btn_container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  
+}
+.submit-btn-div {
+  position: absolute;
+  top: 29%;
+  width: 237px;
+  height: 40px;
+  
+}
+
 #modal_addPhotoBtn,
 .submit-btn {
   font-family: "Syne";
-  background-color: #1d6154;
   color: white;
   border: none;
   border-radius: 60px;
   font-size: 14px;
   font-weight: bold;
   padding: 0.8em 4em;
-  cursor: pointer;
   margin-top: 1.5em;
 }
+#modal_addPhotoBtn {
+  cursor: pointer;
+  background-color: #1d6154;
+}
+
 .submit-btn {
   width: 237px;
+  background-color: #a7a7a7;
+  /* cursor: default; */
 }
 
 #modal_addPhotoBtn:hover {
@@ -478,12 +498,13 @@ footer nav ul {
   flex-direction: column;
   background-color: #e8f1f6;
   align-items: center;
-  padding: 1.7em 0;
+  padding: 0 0;
   cursor: pointer;
   margin-bottom: 2em;
 }
 
 #pic_icon {
+  margin-top: 1.5em;
   margin-bottom: 1em;
 }
 
@@ -500,13 +521,26 @@ footer nav ul {
   cursor: pointer;
 }
 
+.pic-format {
+  margin-bottom: 1.5em;
+}
+
 .label_container p {
   font-size: 10px;
   font-family: "Work Sans";
 }
 
-#picPreviewImg {
+.picPreview_container {
   display: none;
+  justify-content: center;
+  width: 100%;
+  height: 200px;
+}
+
+#picPreviewImg {
+  width: 30%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .photo {

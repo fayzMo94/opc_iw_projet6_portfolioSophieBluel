@@ -44,9 +44,11 @@
               src="./assets/icons/pictureIcon.png"
               alt="choose your picture"
             />
-            <button id="choose_pic_btn">+ Ajouter photo</button>
-            <p>jpg, png : 4mo max</p>
-            <img src="#" id="picPreviewImg" alt="Your picture" />
+            <span id="choose_pic_btn">+ Ajouter photo</span>
+            <span class="pic-format">jpg, png : 4mo max</span>
+            <span class="picPreview_container">
+              <img src="#" id="picPreviewImg" alt="Your picture" />
+            </span>
           </label>
           <input
             type="file"
@@ -65,14 +67,21 @@
             required
           />
           <label for="category-select">Catégorie</label>
-          <select class="form_input iBorder" name="category-select" id="category-select">
-            <option disabled selected> -- choisir une catégorie -- </option>
-            <option value="1">Objets</option>
-            <option value="2">Appartements</option>
-            <option value="3">Hôtels & restaurants</option>
+          <select
+            class="form_input iBorder"
+            name="category-select"
+            id="category-select"
+          >
+            <option disabled selected>-- choisir une catégorie --</option>
+            <option id="1" value="1">Objets</option>
+            <option id="2" value="2">Appartements</option>
+            <option id="3" value="3">Hôtels & restaurants</option>
           </select>
           <hr />
-          <input class="submit-btn" type="submit" value="Valider" />
+          <div class="submit-btn_container">
+            <div class="submit-btn-div"></div>
+            <input class="submit-btn" type="submit" value="Valider" disabled />
+          </div>
         </form>
       </div>
     </aside>
@@ -80,9 +89,9 @@
       <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
       <nav>
         <ul>
-          <a href="./index.html">projets</a>
-          <a href="./index.html#contact">contact</a>
-          <a href="#" id="loginLogoutBtn"></a>
+          <li><a href="./index.html">projets</a></li>
+          <li><a href="./index.html#contact">contact</a></li>
+          <li><a href="#" id="loginLogoutBtn"></a></li>
           <li><img src="./assets/icons/instagram.png" alt="Instagram" /></li>
         </ul>
       </nav>
